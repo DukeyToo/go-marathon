@@ -62,6 +62,23 @@ const (
 	EventIDDeploymentStepFailed
 	// EventIDAppTerminated is the event listener ID for the corresponding event.
 	EventIDAppTerminated
+	// EventIDPodCreated is the event listener ID for the corresponding event.
+	EventIDPodCreated
+	// EventIDPodUpdated is the event listener ID for the corresponding event.
+	EventIDPodUpdated
+	// EventIDPodDeleted is the event listener ID for the corresponding event.
+	EventIDPodDeleted
+	// EventIDUnhealthyTaskKill is the event listener ID for the corresponding event.
+	EventIDUnhealthyTaskKill
+	// EventIDUnhealthyInstanceKill is the event listener ID for the corresponding event.
+	EventIDUnhealthyInstanceKill
+	// EventIDInstanceChanged is the event listener ID for the corresponding event.
+	EventIDInstanceChanged
+	// EventIDUnknownInstanceTerminated is the event listener ID for the corresponding event.
+	EventIDUnknownInstanceTerminated
+	// EventIDInstanceHealthChanged is the event listener ID for the corresponding event.
+	EventIDInstanceHealthChanged
+
 	//EventIDApplications comprises all listener IDs for application events.
 	EventIDApplications = EventIDStatusUpdate | EventIDChangedHealthCheck | EventIDFailedHealthCheck | EventIDAppTerminated
 	//EventIDSubscriptions comprises all listener IDs for subscription events.
@@ -74,25 +91,33 @@ var (
 
 func init() {
 	eventTypesMap = map[string]int{
-		"api_post_event":              EventIDAPIRequest,
-		"status_update_event":         EventIDStatusUpdate,
-		"framework_message_event":     EventIDFrameworkMessage,
-		"subscribe_event":             EventIDSubscription,
-		"unsubscribe_event":           EventIDUnsubscribed,
-		"event_stream_attached":       EventIDStreamAttached,
-		"event_stream_detached":       EventIDStreamDetached,
-		"add_health_check_event":      EventIDAddHealthCheck,
-		"remove_health_check_event":   EventIDRemoveHealthCheck,
-		"failed_health_check_event":   EventIDFailedHealthCheck,
-		"health_status_changed_event": EventIDChangedHealthCheck,
-		"group_change_success":        EventIDGroupChangeSuccess,
-		"group_change_failed":         EventIDGroupChangeFailed,
-		"deployment_success":          EventIDDeploymentSuccess,
-		"deployment_failed":           EventIDDeploymentFailed,
-		"deployment_info":             EventIDDeploymentInfo,
-		"deployment_step_success":     EventIDDeploymentStepSuccess,
-		"deployment_step_failure":     EventIDDeploymentStepFailed,
-		"app_terminated_event":        EventIDAppTerminated,
+		"api_post_event":                    EventIDAPIRequest,
+		"status_update_event":               EventIDStatusUpdate,
+		"framework_message_event":           EventIDFrameworkMessage,
+		"subscribe_event":                   EventIDSubscription,
+		"unsubscribe_event":                 EventIDUnsubscribed,
+		"event_stream_attached":             EventIDStreamAttached,
+		"event_stream_detached":             EventIDStreamDetached,
+		"add_health_check_event":            EventIDAddHealthCheck,
+		"remove_health_check_event":         EventIDRemoveHealthCheck,
+		"failed_health_check_event":         EventIDFailedHealthCheck,
+		"health_status_changed_event":       EventIDChangedHealthCheck,
+		"group_change_success":              EventIDGroupChangeSuccess,
+		"group_change_failed":               EventIDGroupChangeFailed,
+		"deployment_success":                EventIDDeploymentSuccess,
+		"deployment_failed":                 EventIDDeploymentFailed,
+		"deployment_info":                   EventIDDeploymentInfo,
+		"deployment_step_success":           EventIDDeploymentStepSuccess,
+		"deployment_step_failure":           EventIDDeploymentStepFailed,
+		"app_terminated_event":              EventIDAppTerminated,
+		"pod_created_event":                 EventIDPodCreated,
+		"pod_updated_event":                 EventIDPodUpdated,
+		"pod_deleted_event":                 EventIDPodDeleted,
+		"unhealthy_task_kill_event":         EventIDUnhealthyTaskKill,
+		"unhealthy_instance_kill_event":     EventIDUnhealthyInstanceKill,
+		"instance_changed_event":            EventIDInstanceChanged,
+		"unknown_instance_terminated_event": EventIDUnknownInstanceTerminated,
+		"instance_health_changed_event":     EventIDInstanceHealthChanged,
 	}
 }
 
@@ -147,6 +172,37 @@ type EventAppTerminated struct {
 	EventType string `json:"eventType"`
 	Timestamp string `json:"timestamp,omitempty"`
 	AppID     string `json:"appId"`
+}
+
+// EventInstanceChanged describes a 'instance_changed_event' event
+type EventInstanceChanged struct {
+	EventType      string `json:"eventType"`
+	Timestamp      string `json:"timestamp"`
+	InstanceID     string `json:"instanceId"`
+	Condition      string `json:"condition"`
+	RunSpecID      string `json:"runSpecId"`
+	AgentID        string `json:"agentId"`
+	Host           string `json:"host"`
+	RunSpecVersion string `json:"runSpecVersion"`
+}
+
+// EventUnknownInstanceTerminated describes a 'unknown_instance_terminated_event' event
+type EventUnknownInstanceTerminated struct {
+	EventType  string `json:"eventType"`
+	Timestamp  string `json:"timestamp"`
+	InstanceID string `json:"instanceId"`
+	Condition  string `json:"condition"`
+	RunSpecID  string `json:"runSpecId"`
+}
+
+// EventInstanceHealthChanged describes a 'instance_health_changed_event' event
+type EventInstanceHealthChanged struct {
+	EventType      string `json:"eventType"`
+	Timestamp      string `json:"timestamp"`
+	InstanceID     string `json:"instanceId"`
+	RunSpecVersion string `json:"runSpecVersion"`
+	Healthy        bool   `json:"healthy"`
+	RunSpecID      string `json:"runSpecId"`
 }
 
 /* --- Framework Message --- */
@@ -252,6 +308,31 @@ type EventHealthCheckChanged struct {
 	Alive     bool   `json:"alive"`
 }
 
+// EventUnhealthyTaskKill describes a 'unhealthy_task_kill_event' event
+type EventUnhealthyTaskKill struct {
+	EventType string `json:"eventType"`
+	Timestamp string `json:"timestamp"`
+	AppID     string `json:"appId"`
+	TaskID    string `json:"taskId"`
+	Version   string `json:"version"`
+	Reason    string `json:"reason"`
+	Host      string `json:"host"`
+	SlaveID   string `json:"slaveId"`
+}
+
+// EventUnhealthyInstanceKill describes a 'unhealthy_instance_kill_event' event
+type EventUnhealthyInstanceKill struct {
+	EventType  string `json:"eventType"`
+	Timestamp  string `json:"timestamp"`
+	AppID      string `json:"appId"`
+	TaskID     string `json:"taskId"`
+	InstanceID string `json:"instanceId"`
+	Version    string `json:"version"`
+	Reason     string `json:"reason"`
+	Host       string `json:"host"`
+	SlaveID    string `json:"slaveId"`
+}
+
 /* --- Deployments --- */
 
 // EventGroupChangeSuccess describes a 'group_change_success' event.
@@ -310,6 +391,32 @@ type EventDeploymentStepFailure struct {
 	Plan        *DeploymentPlan `json:"plan"`
 }
 
+/* --- Pods --- */
+
+// EventPodCreated describes a 'pod_created_event' event
+type EventPodCreated struct {
+	EventType string `json:"eventType"`
+	Timestamp string `json:"timestamp"`
+	ClientIP  string `json:"clientIp"`
+	URI       string `json:"uri"`
+}
+
+// EventPodUpdated describes a 'pod_created_event' event
+type EventPodUpdated struct {
+	EventType string `json:"eventType"`
+	Timestamp string `json:"timestamp"`
+	ClientIP  string `json:"clientIp"`
+	URI       string `json:"uri"`
+}
+
+// EventPodDeleted describes a 'pod_created_event' event
+type EventPodDeleted struct {
+	EventType string `json:"eventType"`
+	Timestamp string `json:"timestamp"`
+	ClientIP  string `json:"clientIp"`
+	URI       string `json:"uri"`
+}
+
 // GetEvent returns allocated empty event object which corresponds to provided event type
 //		eventType:			the type of Marathon event
 func GetEvent(eventType string) (*Event, error) {
@@ -358,7 +465,24 @@ func GetEvent(eventType string) (*Event, error) {
 			event.Event = new(EventDeploymentStepFailure)
 		case "app_terminated_event":
 			event.Event = new(EventAppTerminated)
+		case "pod_created_event":
+			event.Event = new(EventPodCreated)
+		case "pod_updated_event":
+			event.Event = new(EventPodUpdated)
+		case "pod_deleted_event":
+			event.Event = new(EventPodDeleted)
+		case "unhealthy_task_kill_event":
+			event.Event = new(EventUnhealthyTaskKill)
+		case "unhealthy_instance_kill_event":
+			event.Event = new(EventUnhealthyInstanceKill)
+		case "instance_changed_event":
+			event.Event = new(EventInstanceChanged)
+		case "unknown_instance_terminated_event":
+			event.Event = new(EventUnknownInstanceTerminated)
+		case "instance_health_changed_event":
+			event.Event = new(EventInstanceHealthChanged)
 		}
+
 		return event, nil
 	}
 
