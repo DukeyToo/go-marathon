@@ -300,12 +300,13 @@ type EventFailedHealthCheck struct {
 
 // EventHealthCheckChanged describes a 'health_status_changed_event' event.
 type EventHealthCheckChanged struct {
-	EventType string `json:"eventType"`
-	Timestamp string `json:"timestamp,omitempty"`
-	AppID     string `json:"appId"`
-	TaskID    string `json:"taskId"`
-	Version   string `json:"version,omitempty"`
-	Alive     bool   `json:"alive"`
+	EventType  string `json:"eventType"`
+	Timestamp  string `json:"timestamp,omitempty"`
+	AppID      string `json:"appId,omitEmpty"`
+	TaskID     string `json:"taskId,omitempty"`
+	InstanceID string `json:"instanceId,omitempty"`
+	Version    string `json:"version,omitempty"`
+	Alive      bool   `json:"alive"`
 }
 
 // EventUnhealthyTaskKill describes a 'unhealthy_task_kill_event' event
