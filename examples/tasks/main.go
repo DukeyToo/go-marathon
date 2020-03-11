@@ -20,7 +20,7 @@ import (
 	"fmt"
 	"time"
 
-	marathon "github.com/gambol99/go-marathon"
+	marathon "github.com/dukeytoo/go-marathon"
 )
 
 const marathonURL = "http://127.0.0.1:8080"

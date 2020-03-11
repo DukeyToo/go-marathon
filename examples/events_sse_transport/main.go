@@ -21,7 +21,7 @@ import (
 	"log"
 	"time"
 
-	marathon "github.com/gambol99/go-marathon"
+	marathon "github.com/dukeytoo/go-marathon"
 )
 
 var marathonURL string

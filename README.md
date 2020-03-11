@@ -29,7 +29,7 @@ You can use `examples/docker-compose.yml` in order to start a test cluster.
 
 ```go
 import (
-	marathon "github.com/gambol99/go-marathon"
+	marathon "github.com/dukeytoo/go-marathon"
 )
 
 marathonURL := "http://10.241.1.71:8080"

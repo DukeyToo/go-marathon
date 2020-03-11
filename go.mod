@@ -1,4 +1,4 @@
-module github.com/gambol99/go-marathon
+module github.com/dukeytoo/go-marathon
 
 go 1.14
 
