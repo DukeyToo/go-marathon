@@ -186,7 +186,9 @@ func (r *marathonClient) registerSSESubscription() error {
 				<-time.After(5 * time.Second)
 				continue
 			}
+			r.handleEvent(`{"eventType": "our_stream_attached"}`)
 			err = r.listenToSSE(stream)
+			r.handleEvent(`{"eventType": "our_stream_detached"}`)
 			stream.Close()
 			r.debugLog("Error on SSE subscription: %s", err)
 		}

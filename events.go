@@ -79,6 +79,11 @@ const (
 	// EventIDInstanceHealthChanged is the event listener ID for the corresponding event.
 	EventIDInstanceHealthChanged
 
+	// EventIDOurStreamAttached fires when our own SSE cstream to marathon is attached. Not a marathon event
+	EventIDOurStreamAttached
+	// EventIDOurStreamDetached fires when our own SSE stream to marathon is detached. Not a marathon event
+	EventIDOurStreamDetached
+
 	//EventIDApplications comprises all listener IDs for application events.
 	EventIDApplications = EventIDStatusUpdate | EventIDChangedHealthCheck | EventIDFailedHealthCheck | EventIDAppTerminated
 	//EventIDSubscriptions comprises all listener IDs for subscription events.
@@ -118,6 +123,8 @@ func init() {
 		"instance_changed_event":            EventIDInstanceChanged,
 		"unknown_instance_terminated_event": EventIDUnknownInstanceTerminated,
 		"instance_health_changed_event":     EventIDInstanceHealthChanged,
+		"our_stream_attached":               EventIDOurStreamAttached, // this is our own event, not marathons
+		"our_stream_detached":               EventIDOurStreamDetached, // this is our own event, not marathons
 	}
 }
 
@@ -138,6 +145,18 @@ func (event *Event) String() string {
 
 // EventsChannel is a channel to receive events upon
 type EventsChannel chan *Event
+
+/* --- Our connection to marathon SSE --- */
+
+// EventOurStreamAttached occurs when our SSE stream attaches
+type EventOurStreamAttached struct {
+	EventType string `json:"eventType"`
+}
+
+// EventOurStreamDetached occurs when our SSE stream detaches
+type EventOurStreamDetached struct {
+	EventType string `json:"eventType"`
+}
 
 /* --- API Request --- */
 
@@ -482,6 +501,10 @@ func GetEvent(eventType string) (*Event, error) {
 			event.Event = new(EventUnknownInstanceTerminated)
 		case "instance_health_changed_event":
 			event.Event = new(EventInstanceHealthChanged)
+		case "our_stream_attached":
+			event.Event = new(EventOurStreamAttached)
+		case "our_stream_detached":
+			event.Event = new(EventOurStreamDetached)
 		}
 
 		return event, nil
